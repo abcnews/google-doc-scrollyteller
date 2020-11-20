@@ -1,0 +1,78 @@
+{
+  "name": "@abcnews/google-doc-scrollyteller",
+  "version": "1.0.0-pre",
+  "description": "A scrollyteller preview React component which loads, parses & renders Odyssey-like from a public Google Doc",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abcnews/google-doc-scrollyteller.git"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=12"
+  },
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why",
+    "analyse": "size-limit --why",
+    "release": "np"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "module": "dist/google-doc-scrollyteller.esm.js",
+  "size-limit": [
+    {
+      "path": "dist/google-doc-scrollyteller.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/google-doc-scrollyteller.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "devDependencies": {
+    "@abcnews/alternating-case-to-object": "^2.0.0",
+    "@abcnews/env-utils": "^2.0.0",
+    "@abcnews/mount-utils": "^2.0.0",
+    "@abcnews/scrollyteller": "^4.0.1",
+    "@size-limit/preset-small-lib": "^4.6.0",
+    "@testing-library/react": "^11.0.4",
+    "@types/react": "^16.9.49",
+    "@types/react-dom": "^16.9.8",
+    "husky": "^4.3.0",
+    "identity-obj-proxy": "^3.0.0",
+    "np": "^6.5.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-test-renderer": "^16.13.1",
+    "rollup-plugin-postcss": "^3.1.8",
+    "sass": "^1.26.11",
+    "size-limit": "^4.6.0",
+    "tsdx": "^0.14.0",
+    "tslib": "^2.0.1",
+    "typescript": "^4.0.3"
+  },
+  "peerDependencies": {
+    "@abcnews/scrollyteller": ">=4",
+    "react": ">=16"
+  }
+}

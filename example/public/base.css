@@ -1,0 +1,35 @@
+html {
+  box-sizing: border-box;
+  font-family: ABCSans, sans-serif;
+}
+
+html *,
+html *::before,
+html *::after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  background-color: #fcfcfc;
+}
+
+article {
+  margin: 1rem;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+tr {
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+}
+
+tr > * {
+  padding: 0.25rem;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  text-align: left;
+}
