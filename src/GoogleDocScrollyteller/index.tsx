@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
-import type { ScrollytellerDefinition } from '@abcnews/scrollyteller';
-import { loadScrollyteller } from '@abcnews/scrollyteller';
+import { loadScrollyteller, ScrollytellerDefinition } from '@abcnews/scrollyteller';
 import styles from './index.module.scss';
 
 const URL_LOCALSTORAGE_KEY = 'last-successfully-loaded-google-doc-url';
@@ -16,23 +15,19 @@ export type GoogleDocScrollytellerProps<T> = {
   postprocessScrollytellerDefinition?: (
     scrollytellerDefinition: ScrollytellerDefinition<T>
   ) => ScrollytellerDefinition<T>;
-  renderPreview: (
-    scrollytellerDefinition: ScrollytellerDefinition<T>
-  ) => React.ReactElement;
-  renderFallbackImagesButton?: (
-    scrollytellerDefinition: ScrollytellerDefinition<T>
-  ) => React.ReactElement;
+  renderPreview: (scrollytellerDefinition: ScrollytellerDefinition<T>) => React.ReactElement;
+  renderFallbackImagesButton?: (scrollytellerDefinition: ScrollytellerDefinition<T>) => React.ReactElement;
 };
 
 function GoogleDocScrollyteller<T>({
   loadScrollytellerArgs = {
     className: 'u-full',
-    markerName: 'mark',
+    markerName: 'mark'
   },
   preprocessCoreEl,
   postprocessScrollytellerDefinition,
   renderPreview,
-  renderFallbackImagesButton,
+  renderFallbackImagesButton
 }: GoogleDocScrollytellerProps<T>): React.ReactElement {
   const { name, className, markerName } = loadScrollytellerArgs;
   const inputRef = useRef<HTMLInputElement>(null);
@@ -40,9 +35,7 @@ function GoogleDocScrollyteller<T>({
   const [coreText, setCoreText] = useState<string>();
   const [coreHTML, setCoreHTML] = useState<string>();
   const [preview, setPreview] = useState<React.ReactElement>();
-  const [fallbackImagesButton, setFallbackImagesButton] = useState<
-    React.ReactElement
-  >();
+  const [fallbackImagesButton, setFallbackImagesButton] = useState<React.ReactElement>();
 
   const load = () => {
     const url = inputRef.current?.value;
@@ -53,35 +46,29 @@ function GoogleDocScrollyteller<T>({
 
     setIsLoading(true);
 
-    new Promise<Response>((resolve) => {
-      const pubURL = url.replace(/\/[^\/]+?$/, '/pub');
+    new Promise<Response>(resolve => {
+      const pubURL = url.replace(/\/[^/]+?$/, '/pub');
 
       fetch(pubURL)
         .then(resolve)
-        .catch(() =>
-          fetch(`https://cors-anywhere.herokuapp.com/${pubURL}`).then(resolve)
-        );
+        .catch(() => fetch(`https://cors-anywhere.herokuapp.com/${pubURL}`).then(resolve));
     })
-      .then((response) => response.text())
-      .then((html) => {
+      .then(response => response.text())
+      .then(html => {
         localStorage.setItem(URL_LOCALSTORAGE_KEY, url);
 
-        const body = new DOMParser()
-          .parseFromString(html, 'text/html')
-          .querySelector('#contents > div');
+        const body = new DOMParser().parseFromString(html, 'text/html').querySelector('#contents > div');
 
         if (!body) {
           throw new Error('Body not found');
         }
 
-        Array.from(body.querySelectorAll('*')).forEach((el) => {
+        Array.from(body.querySelectorAll('*')).forEach(el => {
           el.removeAttribute('class');
           el.removeAttribute('id');
         });
 
-        const coreEls: Element[] = Array.from(body.children).map(
-          preprocessCoreEl ? preprocessCoreEl : IDENTITY
-        );
+        const coreEls: Element[] = Array.from(body.children).map(preprocessCoreEl ? preprocessCoreEl : IDENTITY);
 
         const coreText = coreEls.reduce<string>((memo, el) => {
           const text = String(el.textContent).trim();
@@ -118,11 +105,7 @@ function GoogleDocScrollyteller<T>({
             } else if (text.indexOf('#endremove') === 0) {
               memo.isRemoving = false;
             } else if (text.indexOf('#') === 0) {
-              if (
-                text.indexOf(`#scrollyteller${name ? `NAME${name}` : ''}`) ===
-                  0 &&
-                !memo.hasBegun
-              ) {
+              if (text.indexOf(`#scrollyteller${name ? `NAME${name}` : ''}`) === 0 && !memo.hasBegun) {
                 memo.hasBegun = true;
               } else if (text.indexOf('#endscrollyteller') === 0) {
                 memo.hasEnded = true;
@@ -141,45 +124,35 @@ function GoogleDocScrollyteller<T>({
             hasBegun: false,
             hasEnded: false,
             isRemoving: false,
-            scrollytellingEls: [],
+            scrollytellingEls: []
           }
         );
 
         const tempContainerEl = document.createElement('div');
 
         tempContainerEl.className = styles.tempContainerEl;
-        scrollytellingEls.forEach((scrollytellingEl) =>
-          tempContainerEl.appendChild(scrollytellingEl)
-        );
+        scrollytellingEls.forEach(scrollytellingEl => tempContainerEl.appendChild(scrollytellingEl));
         document.body.appendChild(tempContainerEl);
 
-        let scrollytellerDefinition: ScrollytellerDefinition<T> = loadScrollyteller(
-          name,
-          className,
-          markerName
-        );
+        let scrollytellerDefinition: ScrollytellerDefinition<T> = loadScrollyteller(name, className, markerName);
 
         document.body.removeChild(tempContainerEl);
 
         if (postprocessScrollytellerDefinition) {
-          scrollytellerDefinition = postprocessScrollytellerDefinition(
-            scrollytellerDefinition
-          );
+          scrollytellerDefinition = postprocessScrollytellerDefinition(scrollytellerDefinition);
         }
 
         setPreview(renderPreview(scrollytellerDefinition));
 
         if (renderFallbackImagesButton) {
-          setFallbackImagesButton(
-            renderFallbackImagesButton(scrollytellerDefinition)
-          );
+          setFallbackImagesButton(renderFallbackImagesButton(scrollytellerDefinition));
         }
 
         setCoreText(coreText);
         setCoreHTML(coreHTML);
         setIsLoading(false);
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
         setIsLoading(false);
       });
@@ -194,7 +167,7 @@ function GoogleDocScrollyteller<T>({
             ref={inputRef}
             type="text"
             placeholder="Public Google Doc URL"
-            onKeyDown={(event) => event.keyCode === 13 && load()}
+            onKeyDown={event => event.keyCode === 13 && load()}
             defaultValue={localStorage.getItem(URL_LOCALSTORAGE_KEY) || ''}
           ></input>
           <button disabled={isLoading} onClick={load}>
