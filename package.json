@@ -1,6 +1,6 @@
 {
   "name": "@abcnews/google-doc-scrollyteller",
-  "version": "1.0.0-pre",
+  "version": "1.0.0",
   "description": "A scrollyteller preview React component which loads, parses & renders Odyssey-like from a public Google Doc",
   "repository": {
     "type": "git",
