@@ -130,7 +130,7 @@ function GoogleDocScrollyteller<T>({
 
         const tempContainerEl = document.createElement('div');
 
-        tempContainerEl.className = styles.tempContainerEl;
+        tempContainerEl.className = styles.tempContainer;
         scrollytellingEls.forEach(scrollytellingEl => tempContainerEl.appendChild(scrollytellingEl));
         document.body.appendChild(tempContainerEl);
 
